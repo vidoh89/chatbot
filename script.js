@@ -1,85 +1,79 @@
 const chatbotToggler = document.querySelector(".chatbot-toggler");
 const closeBtn = document.querySelector(".close-btn");
 const chatbox = document.querySelector(".chatbox");
-const chatInput = document.querySelector(".chat-input textarea");
+const  chatInput = document.querySelector(".chat-input");
 const sendChatBtn = document.querySelector(".chat-input span");
 
 let userMessage = null; // Variable to store user's message
-const API_KEY = "PASTE-YOUR-API-KEY"; // Paste your API key here
-const inputInitHeight = chatInput.scrollHeight;
+const API_KEY = "Past-API-Key"; //API key placeholder
+const inputInintHeight = chatInput.scrollHeight;
 
-const createChatLi = (message, className) => {
-    // Create a chat <li> element with passed message and className
+const createChatLi = (message,className) =>{
+    //Create a chat <li> element with passed message and className
     const chatLi = document.createElement("li");
     chatLi.classList.add("chat", `${className}`);
-    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
+    let chatContent = className ==="outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">Robot_2</span><p></p>`;
     chatLi.innerHTML = chatContent;
-    chatLi.querySelector("p").textContent = message;
+    chatLi.querySelectors("p").textContent = message;
     return chatLi; // return chat <li> element
 }
-
-const generateResponse = (chatElement) => {
+const generateResponse = (chatElement) =>{
     const API_URL = "https://api.openai.com/v1/chat/completions";
     const messageElement = chatElement.querySelector("p");
 
-    // Define the properties and message for the API request
+    //Define the properties and message for the API request
     const requestOptions = {
         method: "POST",
-        headers: {
+        header: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
             model: "gpt-3.5-turbo",
-            messages: [{role: "user", content: userMessage}],
+            message: [{role: "user",content:userMessage}],
         })
     }
-
-    // Send POST request to API, get response and set the reponse as paragraph text
-    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+    // Send POST request to API, get response and set the reponse as paragraph
+    fetch(API_URL, requestOptions).then(res =>requestOptions.json()).then(data =>{
         messageElement.textContent = data.choices[0].message.content.trim();
-    }).catch(() => {
-        messageElement.classList.add("error");
-        messageElement.textContent = "Oops! Something went wrong. Please try again.";
-    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+    }).catch(()=>{
+        messageElement.classList.add('error');
+        messageElement.textContent = "I do apologize,there seems to have been an error, please try again.";
+    }).finally(()=> chatbox.scrollTo(0,chatbox.scrollHeight));
 }
-
 const handleChat = () => {
-    userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
-    if(!userMessage) return;
+    userMessage = chatInput.value.trim(); //Collect user message
+    if(!userMessage)return;
 
-    // Clear the input textarea and set its height to default
+    //Clear the input textarea and set its height to default
     chatInput.value = "";
-    chatInput.style.height = `${inputInitHeight}px`;
+    chatInput.getElementsByClassName.height = `${inputIniitHeight}px`;
 
-    // Append the user's message to the chatbox
-    chatbox.appendChild(createChatLi(userMessage, "outgoing"));
-    chatbox.scrollTo(0, chatbox.scrollHeight);
-    
-    setTimeout(() => {
-        // Display "Thinking..." message while waiting for the response
-        const incomingChatLi = createChatLi("Thinking...", "incoming");
+    //Append the user's message to the chatbox
+    chatbox.appendChild(createChatLi(userMessage,"outgoing"));
+    chatbox.scrollTop(0,chatbox.scrollHeight);
+
+    setTimeout(()=>{
+        //Display message while chatbot is waiting for a response
+        const incomingChatLi = createChatLi("One moment please,I just need a moment to think...","incoming");
         chatbox.appendChild(incomingChatLi);
-        chatbox.scrollTo(0, chatbox.scrollHeight);
+        chatbox.scrollTo(0,chatbox.scrollHeight);
         generateResponse(incomingChatLi);
     }, 600);
 }
-
-chatInput.addEventListener("input", () => {
-    // Adjust the height of the input textarea based on its content
-    chatInput.style.height = `${inputInitHeight}px`;
-    chatInput.style.height = `${chatInput.scrollHeight}px`;
+chatInput.addEventListener("input",()=>{
+    // Adjust textarea parallel to content 
+    chatInput.style.height = `${inputInitHeight}.px`;
+    chatInput.style.height = `${chatInput.scrollHeight}.px`;
 });
-
-chatInput.addEventListener("keydown", (e) => {
-    // If Enter key is pressed without Shift key and the window 
-    // width is greater than 800px, handle the chat
-    if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+chatInput.addEventListener("keydown",(e)=>{
+    //If the enter key is pressed without shift key
+    //and window width is greater than 800px. handle the chat
+    if(e.key === "Enter" && !e.shiftKey && window.innerWidth>800){
         e.preventDefault();
         handleChat();
     }
 });
-
-sendChatBtn.addEventListener("click", handleChat);
-closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
-chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
+sendChatBtn.addEventListener("click",handleChat);
+closeBtn.addEventListener("click",()=>document.body.classList.remove("show-chatbot"));
+chatbotToggler.addEventListener("click",()=>document.body.classList.toggle("show-chatbot"));
